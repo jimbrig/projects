@@ -1,6 +1,6 @@
 <div align = "center">
 
-<h1><a href="https://jimbrig.github.io/projects">Projects</a></h1>
+<h1><a href="https://github-projects.jimbrig.com">Projects</a></h1>
 
 </div>
 
