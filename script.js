@@ -8,13 +8,13 @@ const filterInput = document.querySelector('.filter-repos');
 // get information from github profile
 const getProfile = async function () {
     const res = await fetch(
-        `https://api.github.com/users/${username}`
-        // {
-        //     headers: {
-        //         Accept: 'application/vnd.github+json',
-        //         Authorization: 'token your-personal-access-token-here'
-        //     }
-        // }
+        `https://api.github.com/users/${username}`,
+        {
+            headers: {
+                Accept: 'application/vnd.github+json',
+                Authorization: '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'
+            }
+        }
     );
     const profile = await res.json();
     displayProfile(profile);
@@ -49,14 +49,14 @@ const getRepos = async function () {
     let res;
     for (let i = 1; i <= maxPages; i++) {
         res = await fetch(
-            `https://api.github.com/users/${username}/repos?&sort=pushed&per_page=100&page=${i}`
-            // {
-            //     headers: {
-            //         Accept: 'application/vnd.github+json',
-            //         Authorization:
-            //             'token your-personal-access-token-here'
-            //     }
-            // }
+            `https://api.github.com/users/${username}/repos?&sort=pushed&per_page=100&page=${i}`,
+            {
+                headers: {
+                    Accept: 'application/vnd.github+json',
+                    Authorization:
+                        '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'
+                }
+            }
         );
         let data = await res.json();
         repos = repos.concat(data);
