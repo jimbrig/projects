@@ -1,12 +1,12 @@
-const username = 'jimbrig';
+const username = '2KAbhishek';
 const maxPages = 2;
+const hideForks = true;
 const repoList = document.querySelector('.repo-list');
 const reposSection = document.querySelector('.repos');
 const filterInput = document.querySelector('.filter-repos');
 
-
 // get information from github profile
-const getProfile = async function () {
+const getProfile = async () => {
     const res = await fetch(
         `https://api.github.com/users/${username}`,
         {
@@ -22,7 +22,7 @@ const getProfile = async function () {
 getProfile();
 
 // display infomation from github profile
-const displayProfile = function (profile) {
+const displayProfile = (profile) => {
     const userInfo = document.querySelector('.user-info');
     userInfo.innerHTML = `
         <figure>
@@ -44,7 +44,7 @@ const displayProfile = function (profile) {
 };
 
 // get list of user's public repos
-const getRepos = async function () {
+const getRepos = async () => {
     let repos = [];
     let res;
     for (let i = 1; i <= maxPages; i++) {
@@ -61,28 +61,61 @@ const getRepos = async function () {
         let data = await res.json();
         repos = repos.concat(data);
     }
+    repos.sort((a, b) => b.forks_count - a.forks_count);
+    repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
     displayRepos(repos);
 };
 getRepos();
 
 // display list of all user's public repos
-const displayRepos = function (repos) {
+const displayRepos = (repos) => {
+    const userHome = `https://github.com/${username}`
     filterInput.classList.remove('hide');
     for (const repo of repos) {
+        if (repo.fork && hideForks) {
+            continue;
+        }
+
+        const langUrl = `${userHome}?tab=repositories&q=&language=${repo.language}`
+        const starsUrl = `${userHome}/${repo.name}/stargazers`
+        const forksUrl = `${userHome}/${repo.name}/network/members`
+
         let listItem = document.createElement('li');
         listItem.classList.add('repo');
         listItem.innerHTML = `
             <h3>${repo.name}</h3>
-            <span>${repo.description}</span> <br/><br/>
-            <span>${devicons[repo.language]}</span> <br />
-            <br />
-            <a href=${repo.html_url}>View Project</a>`;
+            <span>${repo.description}</span> <br/><br/>`
+
+        if (repo.stargazers_count > 0) {
+            listItem.innerHTML += `<a href="${starsUrl}">
+            <span>⭐ ${repo.stargazers_count}</span></a>`
+        }
+
+        if (repo.language) {
+            listItem.innerHTML += `<a href="${langUrl}">
+            <span>${devicons[repo.language]}</span></a>`
+        }
+
+        if (repo.forks_count > 0) {
+            listItem.innerHTML += `<a href="${starsUrl}">
+            <span>${devicons["Git"]} ${repo.forks_count}</span></a>`
+        }
+
+        if (repo.homepage && repo.homepage !== "") {
+            listItem.innerHTML += `<br /> <br />
+            <a class="link-btn" href=${repo.html_url}>Code ${devicons["Github"]}</a>
+            <a class="link-btn" href=${repo.homepage}>Live ${devicons["Chrome"]}</a> <br />`;
+        } else {
+            listItem.innerHTML += `<br /> <br />
+            <a class="link-btn" href=${repo.html_url}>View Project ${devicons["Github"]}</a><br />`;
+        }
+
         repoList.append(listItem);
     }
 };
 
 // dynamic search
-filterInput.addEventListener('input', function (e) {
+filterInput.addEventListener('input', (e) => {
     const search = e.target.value;
     const repos = document.querySelectorAll('.repo');
     const searchLowerText = search.toLowerCase();
@@ -99,12 +132,16 @@ filterInput.addEventListener('input', function (e) {
 
 // for programming language icons
 const devicons = {
+    Git: '<i class="devicon-git-plain" style="color: #555"></i>',
+    Github: '<i class="devicon-github-plain" style="color: #1688f0"></i>',
+    Chrome: '<i class="devicon-chrome-plain" style="color: #1688f0"></i>',
     Assembly: '<i class="devicon-labview-plain colored"></i> Assembly',
     'C#': '<i class="devicon-csharp-plain colored"></i> C#',
     'C++': '<i class="devicon-cplusplus-plain colored"></i> C++',
     C: '<i class="devicon-c-plain colored"></i> C',
     Clojure: '<i class="devicon-clojure-plain colored"></i> C',
-    CoffeeScript: '<i class="devicon-coffeescript-plain colored"></i> CoffeeScript',
+    CoffeeScript:
+        '<i class="devicon-coffeescript-plain colored"></i> CoffeeScript',
     Crystal: '<i class="devicon-crystal-plain colored"></i> Crystal',
     CSS: '<i class="devicon-css3-plain colored"></i> CSS',
     Dart: '<i class="devicon-dart-plain colored"></i> Dart',
@@ -149,5 +186,4 @@ const devicons = {
     TypeScript: '<i class="devicon-typescript-plain colored"></i> TypeScript',
     'Vim Script': '<i class="devicon-vim-plain colored"></i> Vim Script',
     Vue: '<i class="devicon-vuejs-plain colored"></i> Vue',
-    null: '<i class="devicon-markdown-original"></i> Markdown'
 };
