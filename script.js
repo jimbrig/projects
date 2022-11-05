@@ -4,6 +4,7 @@ const hideForks = true;
 const repoList = document.querySelector('.repo-list');
 const reposSection = document.querySelector('.repos');
 const filterInput = document.querySelector('.filter-repos');
+const github_token = process.env.GH_SECRET
 
 // get information from github profile
 const getProfile = async () => {
@@ -12,7 +13,7 @@ const getProfile = async () => {
         {
             headers: {
                 Accept: 'application/vnd.github+json',
-                Authorization: process.env.GH_SECRET
+                Authorization: github_token
             }
         }
     );
