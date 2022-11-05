@@ -12,7 +12,7 @@ const getProfile = async () => {
         {
             headers: {
                 Accept: 'application/vnd.github+json',
-                Authorization: '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'
+                Authorization: process.env.GH_SECRET
             }
         }
     );
