@@ -9,13 +9,13 @@ const github_token = process.env.GH_SECRET
 // get information from github profile
 const getProfile = async () => {
     const res = await fetch(
-        `https://api.github.com/users/${username}`,
-        {
-            headers: {
-                Accept: 'application/vnd.github+json',
-                Authorization: github_token
-            }
-        }
+        `https://api.github.com/users/${username}` //,
+        // {
+        //    headers: {
+        //        Accept: 'application/vnd.github+json',
+        //        Authorization: github_token
+        //    }
+        // }
     );
     const profile = await res.json();
     displayProfile(profile);
